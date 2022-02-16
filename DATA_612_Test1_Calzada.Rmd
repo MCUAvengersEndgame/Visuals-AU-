@@ -1,0 +1,154 @@
+---
+title: "DATA-612 Test 1"
+author: "Max Calzada Munoz"
+date: "10/5/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2) 
+data(midwest)
+#view(midwest)
+```
+
+### 1)
+
+```{r, message = FALSE}
+#piping
+midwest %>%
+  filter(state == "OH") %>%
+  print()
+
+# assignment
+midwestOH <- filter(midwest, state == "OH")
+midwestOH
+```
+
+### 2)
+
+```{r, message = FALSE}
+midwest %>%
+  filter(state == "IN", popwhite > 50000, popwhite < 90000) %>%
+  print(n = 10)
+```
+
+### 3)
+
+```{r, message = FALSE}
+midwest %>%
+  select("state", "county", poptotal, popamerindian, percamerindan) %>%
+  filter(state == "IN") %>%
+  arrange(desc(popamerindian)) %>%
+  print(n = 20)
+```
+
+Marion county has the highest number of Native Americans in Indiana.
+
+### 4)
+
+```{r, message = FALSE}
+midwest %>%
+  select("state", "county", poppovertyknown, percprof) %>%
+  filter(state == "MI", poppovertyknown > 10000, percprof > 10) %>%
+  print()
+```
+
+### 5)
+
+```{r, message = FALSE}
+#mean poverty percentage
+# midwest %>%
+#   select(state, percbelowpoverty) %>%
+#   group_by(state) %>%
+#   summarize(MeanPovPerc = mean(percbelowpoverty , na.rm = TRUE))
+
+#mean poverty population
+midwest %>%
+  select(state, poppovertyknown) %>%
+  group_by(state) %>%
+  summarize(MeanPovPopl = mean(poppovertyknown , na.rm = TRUE))
+```
+
+### 6)
+
+```{r, message = FALSE}
+ggplot(data = midwest) +
+  geom_point(mapping = aes(x = poptotal, y = poppovertyknown))
+```
+
+The data make an almost perfectly straight line.
+
+### 7)
+
+```{r, message = FALSE}
+ggplot(data = midwest) +
+  geom_boxplot(mapping = aes(x = state, y = percadultpoverty))
+```
+
+### 8)
+
+```{r, message = FALSE}
+ggplot(mapping = aes(x = percollege, y = percprof, color = "red"), data = midwest) +
+  geom_point() +
+  geom_smooth(se = FALSE, color = "black") +
+  facet_wrap(~state) +
+  ggtitle("College/Professional Work Scatter Plots")
+```
+
+### 9)
+
+For this problem, I am going to assume that counties (or just data points) are what is being counted.
+
+```{r, message = FALSE}
+ggplot(data = midwest) +
+  geom_bar(mapping = aes(x = state, fill = state))
+```
+
+Illinois has the highest count.
+
+### 10)
+
+```{r, message = FALSE}
+#Assign values for r and h
+r <- 5
+h <- 10
+
+V <- function(r)
+{
+  (pi * r^2)
+}
+
+V(r)
+
+A <- function(r,h)
+{
+  2*(pi*r*h + V(r))
+}
+A(r,h)
+```
+
+### 11)
+
+```{r, message = FALSE}
+midwest %>%
+  mutate(midwest, 
+         Ratio = popadults/poptotal, 
+         Percent = Ratio*100, 
+         state = recode(state, "WI" = "Wisconsin")) %>%
+  select("state", "county", poptotal, popadults, Ratio, Percent) %>%
+  filter(state == "Wisconsin") %>%
+  print(n = 25)
+```
+
+### 12)
+
+```{r}
+ggplot(data = midwest) +
+  geom_violin(mapping = aes(y = state, x = area, fill = state)) +
+  ggtitle("Violin Plots (area vs state)")
+```
+
+
